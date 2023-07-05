@@ -184,7 +184,13 @@ class SourceMapExtractor(object):
             os.makedirs(os.path.dirname(write_path), mode=0o755, exist_ok=True)
             with open(write_path, 'w', encoding='utf-8', errors='ignore', newline='') as f:
                 print("Writing %s..." % os.path.basename(write_path))
-                f.write(content)
+                try:
+                    f.write(content)
+                except TypeError as err:
+                    if content is None:
+                        f.write('null')
+                    else:
+                        raise err
 
     def _get_sanitised_file_path(self, sourcePath):
         """Sanitise webpack paths for separators/relative paths"""
